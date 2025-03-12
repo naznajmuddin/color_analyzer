@@ -1,0 +1,11 @@
+gunicorn
+Flask
+Flask_Bcrypt
+Flask_Caching
+Flask_Cors
+Flask_JWT_Extended
+numpy
+Pillow
+psycopg2
+scikit_learn
+webcolors

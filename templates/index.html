@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Color Analysis</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #121212;
+            color: white;
+            text-align: center;
+        }
+        .container {
+            width: 60%;
+            margin: auto;
+            padding: 30px;
+            background: #1e1e2e;
+            border-radius: 15px;
+            box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.1);
+        }
+        .upload-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #9d65c9;
+            padding: 25px;
+            cursor: pointer;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .upload-box:hover {
+            background: #2b2b4e;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .color-box {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            background: #252547;
+        }
+        .color {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2);
+            margin: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        input, select, button {
+            margin: 10px;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            outline: none;
+            font-size: 16px;
+        }
+        button {
+            background-color: #9d65c9;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background-color: #7c4da6;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Pqa Image Color Analysis</h2>
+        <form action="/" method="post" enctype="multipart/form-data">
+            <label class="upload-box" for="file-input">
+                <input type="file" name="file" id="file-input" hidden required>
+                <i class="fas fa-upload"></i> <br> Choose an image
+            </label>
+            <div class="controls">
+                <div>
+                    <label>Number of Colors:</label>
+                    <input type="range" name="num_colors" min="1" max="10" value="5">
+                </div>
+            </div>
+            <button type="submit">Analyze Image</button>
+        </form>
+        {% if filename %}
+            <h3>Uploaded Image</h3>
+            <img src="{{ url_for('static', filename='uploads/' + filename) }}" width="300" style="border-radius: 10px; border: 2px solid #9d65c9;">
+            <h3>Extracted Colors</h3>
+            <div class="color-box">
+                {% for rgb_color, hex_color in colors %}
+                    <div class="color" style="background-color: rgb({{ rgb_color[0] }}, {{ rgb_color[1] }}, {{ rgb_color[2] }}); color: {{ '#000' if (rgb_color[0]*0.299 + rgb_color[1]*0.587 + rgb_color[2]*0.114) > 186 else '#FFF' }}">
+                        {{ hex_color }} <br> RGB({{ rgb_color[0] }}, {{ rgb_color[1] }}, {{ rgb_color[2] }})
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
