@@ -9,11 +9,11 @@ app.config["UPLOAD_FOLDER"] = "static/uploads"
 app.config["ALLOWED_EXTENSIONS"] = {"png", "jpg", "jpeg"}
 
 # Ensure the upload folder exists
-if not os.path.exists(app.config["UPLOAD_FOLDER"]):
-    os.makedirs(app.config["UPLOAD_FOLDER"])
+os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
 
 def allowed_file(filename):
+    """Check if file extension is allowed"""
     return (
         "." in filename
         and filename.rsplit(".", 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
@@ -43,12 +43,14 @@ def index():
 
             # Extract colors using ImageColorAnalyzer
             analyzer = ImageColorAnalyzer(image, num_colors)
-            hex_colors, rgb_colors = analyzer.analyze_colors()
+            hex_colors, rgb_colors, percentages = analyzer.analyze_colors()
 
             return render_template(
                 "index.html",
                 filename=filename,
-                colors=list(zip(rgb_colors, hex_colors)),  # Pass combined RGB and HEX
+                colors=list(
+                    zip(rgb_colors, hex_colors, percentages)
+                ),  # Pass RGB, HEX, and % data
                 num_colors=num_colors,
             )
 

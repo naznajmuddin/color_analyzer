@@ -21,27 +21,6 @@
             border-radius: 15px;
             box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.1);
         }
-        .upload-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border: 2px dashed #9d65c9;
-            padding: 25px;
-            cursor: pointer;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-        .upload-box:hover {
-            background: #2b2b4e;
-        }
-        .controls {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
         .color-box {
             display: flex;
             flex-wrap: wrap;
@@ -56,12 +35,27 @@
             height: 120px;
             border-radius: 8px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2);
             margin: 10px;
             border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        .upload-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #9d65c9;
+            padding: 25px;
+            cursor: pointer;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .upload-box:hover {
+            background: #2b2b4e;
         }
         input, select, button {
             margin: 10px;
@@ -91,22 +85,21 @@
                 <input type="file" name="file" id="file-input" hidden required>
                 <i class="fas fa-upload"></i> <br> Choose an image
             </label>
-            <div class="controls">
-                <div>
-                    <label for="num_colors">Number of Colors [1-10]:</label>
-                    <input type="number" id="num_colors" name="num_colors" min="1" max="10" value="5">
-                </div>
-            </div>            
+            <div>
+                <label for="num_colors">Number of Colors [1-10]:</label>
+                <input type="number" id="num_colors" name="num_colors" min="1" max="10" value="5">
+            </div>
             <button type="submit">Analyze Image</button>
         </form>
         {% if filename %}
             <h3>Uploaded Image</h3>
-            <img src="{{ url_for('static', filename='uploads/' + filename) }}" width="300" style="border-radius: 10px; border: 2px solid #9d65c9;">
-            <h3>Extracted Colors</h3>
+            <img src="{{ url_for('static', filename='uploads/' + filename) }}" width="300">
+            <h3>Extracted Colors (Sorted by Percentage)</h3>
             <div class="color-box">
-                {% for rgb_color, hex_color in colors %}
-                    <div class="color" style="background-color: rgb({{ rgb_color[0] }}, {{ rgb_color[1] }}, {{ rgb_color[2] }}); color: {{ '#000' if (rgb_color[0]*0.299 + rgb_color[1]*0.587 + rgb_color[2]*0.114) > 186 else '#FFF' }}">
-                        {{ hex_color }} <br> RGB({{ rgb_color[0] }}, {{ rgb_color[1] }}, {{ rgb_color[2] }})
+                {% for rgb_color, hex_color, percentage in colors %}
+                    <div class="color" style="background-color: {{ hex_color }}; color: {{ '#000' if (rgb_color[0]*0.299 + rgb_color[1]*0.587 + rgb_color[2]*0.114) > 186 else '#FFF' }}">
+                        {{ hex_color }} <br> RGB({{ rgb_color[0] }}, {{ rgb_color[1] }}, {{ rgb_color[2] }}) <br>
+                        {{ "%.2f" % percentage }}%
                     </div>
                 {% endfor %}
             </div>
