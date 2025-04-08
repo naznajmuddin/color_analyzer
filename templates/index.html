@@ -75,12 +75,28 @@
             background-color: #7c4da6;
             transform: scale(1.05);
         }
+        #progress-container {
+            display: none;
+            width: 100%;
+            background: #444;
+            border-radius: 10px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+        #progress-bar {
+            height: 20px;
+            width: 0%;
+            background: #4CAF50;
+            text-align: center;
+            color: white;
+            line-height: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>Image Color Analysis</h2>
-        <form action="/" method="post" enctype="multipart/form-data">
+        <form id="upload-form">
             <label class="upload-box" for="file-input">
                 <input type="file" name="file" id="file-input" hidden required>
                 <i class="fas fa-upload"></i> <br> Choose an image
@@ -91,19 +107,189 @@
             </div>
             <button type="submit">Analyze Image</button>
         </form>
-        {% if filename %}
-            <h3>Uploaded Image</h3>
-            <img src="{{ url_for('static', filename='uploads/' + filename) }}" width="300">
-            <h3>Extracted Colors (Sorted by Percentage)</h3>
-            <div class="color-box">
-                {% for rgb_color, hex_color, percentage in colors %}
-                    <div class="color" style="background-color: {{ hex_color }}; color: {{ '#000' if (rgb_color[0]*0.299 + rgb_color[1]*0.587 + rgb_color[2]*0.114) > 186 else '#FFF' }}">
-                        {{ hex_color }} <br> RGB({{ rgb_color[0] }}, {{ rgb_color[1] }}, {{ rgb_color[2] }}) <br>
-                        {{ "%.2f" % percentage }}%
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+
+        <div id="progress-container">
+            <div id="progress-bar">0%</div>
+        </div>
+
+        <div id="result"></div>
+        <hr>
+        <button onclick="getUsualColors()">Get Usual Colors</button>
+        <div id="usual-result"></div>
+
+        <hr>
+    <button onclick="showImageColorTable()">Show All Image Color Data</button>
+    <div id="image-color-table" style="margin-top: 30px;"></div>
+
+    <button onclick="clearImageColorData()" style="background-color: #c94f4f;">Clear All Data</button>
+
+
     </div>
+
+    <script>
+        document.getElementById("upload-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            let fileInput = document.getElementById("file-input");
+            let numColors = document.getElementById("num_colors").value;
+            let file = fileInput.files[0];
+
+            if (!file) {
+                alert("Please select a file!");
+                return;
+            }
+
+            let formData = new FormData();
+            formData.append("file", file);
+            formData.append("num_colors", numColors);
+
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "/upload", true);
+
+            xhr.upload.onprogress = function(event) {
+                if (event.lengthComputable) {
+                    let percent = Math.round((event.loaded / event.total) * 100);
+                    document.getElementById("progress-bar").style.width = percent + "%";
+                    document.getElementById("progress-bar").innerText = percent + "%";
+                    document.getElementById("progress-container").style.display = "block";
+                }
+            };
+
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    let response = JSON.parse(xhr.responseText);
+                    let resultHTML = `<h3>Uploaded Image</h3>
+                                      <img src="${response.image_url}" width="300"><br>
+                                      <p><strong>File Name:</strong> ${response.filename}</p>
+                                      <h3>Extracted Colors</h3>
+                                      <div class="color-box">`;
+
+                    response.colors.forEach(color => {
+                        resultHTML += `<div class="color" style="background-color: ${color.hex}; color: ${color.textColor}">
+                                        ${color.hex} <br> RGB(${color.rgb.join(", ")}) <br>
+                                        ${color.percentage.toFixed(2)}%
+                                       </div>`;
+                    });
+
+                    resultHTML += `</div>
+               <button type="button" id="download-pdf" data-filename="${response.filename}">Download PDF Report</button>
+               <button type="button" onclick="window.open('/view_result/${response.filename}', '_blank')">View in New Tab</button>`;
+
+                    document.getElementById("result").innerHTML = resultHTML;
+
+                    document.getElementById("download-pdf").addEventListener("click", function() {
+                        let filename = this.getAttribute("data-filename");
+
+                        fetch("/generate_pdf", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                filename: filename,
+                                colors: response.colors
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.pdf_url) {
+                                window.location.href = data.pdf_url;
+                            } else {
+                                alert("PDF generation failed.");
+                            }
+                        })
+                        .catch(err => {
+                            console.error("Error generating PDF:", err);
+                            alert("An error occurred during PDF generation.");
+                        });
+                    });
+                } else {
+                    document.getElementById("result").innerHTML = "<p>Upload failed. Try again.</p>";
+                }
+
+                document.getElementById("progress-bar").style.width = "0%";
+                document.getElementById("progress-container").style.display = "none";
+            };
+
+            xhr.send(formData);
+        });
+
+        function getUsualColors() {
+            fetch("/usual_colors")
+                .then(res => res.json())
+                .then(data => {
+                    let html = `<h3>Usual Colors (Top 10)</h3><div class="color-box">`;
+                    data.forEach(c => {
+                        html += `<div class="color" style="background-color: ${c.hex}; color: #000">
+                                    ${c.hex}<br>${c.count} times
+                                 </div>`;
+                    });
+                    html += `</div>`;
+                    document.getElementById("usual-result").innerHTML = html;
+                });
+        }
+
+        function showImageColorTable() {
+            fetch("/all_images_data")
+                .then(res => res.json())
+                .then(data => {
+                    if (!Array.isArray(data)) {
+                        document.getElementById("image-color-table").innerHTML = "<p>No data available.</p>";
+                        return;
+                    }
+        
+                    let html = `<h3>Uploaded Images and Dominant Colors</h3>
+                                <table style="width:100%; border-collapse: collapse; text-align: left;">
+                                    <thead>
+                                        <tr style="background-color: #333;">
+                                            <th style="padding: 10px; border: 1px solid #555;">Image Name</th>
+                                            <th style="padding: 10px; border: 1px solid #555;">Colors</th>
+                                            <th style="padding: 10px; border: 1px solid #555;">Dominant</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>`;
+        
+                    data.forEach(item => {
+                        let colorSwatches = item.colors.map((hex, index) => {
+                            let isDominant = index === 0;
+                            return `<span style="display: inline-block; width: 25px; height: 25px; margin: 3px; 
+                                            border-radius: 4px; background: ${hex}; border: 2px solid ${isDominant ? '#FFD700' : '#999'}"
+                                            title="${hex} ${isDominant ? '(Dominant)' : ''}">
+                                    </span>`;
+                        }).join("");
+        
+                        html += `<tr>
+                                    <td style="padding: 10px; border: 1px solid #555;">${item.filename}</td>
+                                    <td style="padding: 10px; border: 1px solid #555;">${colorSwatches}</td>
+                                    <td style="padding: 10px; border: 1px solid #555;">${item.dominant_color}</td>
+                                </tr>`;
+                    });
+        
+                    html += `</tbody></table>`;
+                    document.getElementById("image-color-table").innerHTML = html;
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById("image-color-table").innerHTML = "<p>Error loading data.</p>";
+                });
+        }
+
+        function clearImageColorData() {
+            if (confirm("Are you sure you want to clear all uploaded image color data?")) {
+                fetch("/clear_data", { method: "POST" })
+                    .then(res => res.json())
+                    .then(data => {
+                        alert(data.message);
+                        document.getElementById("image-color-table").innerHTML = "";
+                        document.getElementById("usual-result").innerHTML = "";
+                        document.getElementById("result").innerHTML = "";
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert("Failed to clear data.");
+                    });
+            }
+        }
+        
+        
+    </script>    
 </body>
 </html>
