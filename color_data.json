@@ -1,9 +1,29 @@
 {
     "Test_SEL-BgnstRxBgnstD.jpg": [
-        "#f0a3f0",
-        "#eb90ea",
+        "#ed98ed",
+        "#f1a7f1",
         "#f3bff5",
-        "#c488de",
-        "#b77cd5"
+        "#b97dd7",
+        "#c48bdf",
+        "#e3afea",
+        "#e887e6"
+    ],
+    "Test_SEL-BgnstRxNewD.jpg": [
+        "#de7ae2",
+        "#f2b1f5",
+        "#e68aeb",
+        "#a46acd",
+        "#b476d6",
+        "#ea9fef",
+        "#c785df"
+    ],
+    "Test_SEL-BgnstRxOldD.jpg": [
+        "#cf73cd",
+        "#d183d3",
+        "#9058b5",
+        "#e28fdd",
+        "#9f64be",
+        "#824baa",
+        "#c361c1"
     ]
 }
