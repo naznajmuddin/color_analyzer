@@ -103,9 +103,9 @@
             </label>
             <div>
                 <label for="num_colors">Number of Colors [1-10]:</label>
-                <input type="number" id="num_colors" name="num_colors" min="1" max="7" value="5">
+                <input type="number" id="num_colors" name="num_colors" min="1" max="10" value="5">
             </div>
-            <button type="submit">Analyse Image</button>
+            <button type="submit">Analyze Image</button>
         </form>
 
         <div id="progress-container">
@@ -113,12 +113,15 @@
         </div>
 
         <div id="result"></div>
+        <hr>
+        <button onclick="getUsualColors()">Get Usual Colors</button>
+        <div id="usual-result"></div>
 
         <hr>
-        <button onclick="showImageColorTable()">Show All Image Color Data</button>
-        <div id="image-color-table" style="margin-top: 30px;"></div>
+    <button onclick="showImageColorTable()">Show All Image Color Data</button>
+    <div id="image-color-table" style="margin-top: 30px;"></div>
 
-        <button onclick="clearImageColorData()" style="background-color: #c94f4f;">Clear All Data</button>
+    <button onclick="clearImageColorData()" style="background-color: #c94f4f;">Clear All Data</button>
 
 
     </div>
@@ -169,6 +172,8 @@
                     });
 
                     resultHTML += `</div>
+               <button type="button" id="download-pdf" data-filename="${response.filename}">Download PDF Report</button>
+               <button type="button" onclick="window.open('/view_result/${response.filename}', '_blank')">View in New Tab</button>`;
 
                     document.getElementById("result").innerHTML = resultHTML;
 
