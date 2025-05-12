@@ -9,3 +9,4 @@ Pillow
 psycopg2
 scikit_learn
 webcolors
+reportlab
