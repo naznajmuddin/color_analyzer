@@ -1,27 +1,121 @@
 {
     "Test_SEL-BgnstRxBgnstD.jpg": [
-        "#ed98ed",
-        "#bc80d9",
-        "#f3bff5",
-        "#f2a7f1",
-        "#cd8fe1"
+        "#f0a0f0",
+        "#f3bbf5",
+        "#e88fe8",
+        "#c185dc",
+        "#d090e2"
     ],
     "Test_SEL-BgnstRxNewD.jpg": [
-        "#de7ae2",
-        "#f2b1f5",
-        "#e68aeb",
-        "#a46acd",
-        "#b476d6",
-        "#ea9fef",
-        "#c785df"
+        "#dc7ce3",
+        "#eea8f2",
+        "#e68deb",
+        "#aa6dd0",
+        "#bc7edb"
     ],
     "Test_SEL-BgnstRxOldD.jpg": [
-        "#cf73cd",
-        "#d183d3",
-        "#9058b5",
-        "#e28fdd",
-        "#9f64be",
-        "#824baa",
-        "#c361c1"
+        "#ce7acf",
+        "#e495df",
+        "#965eb9",
+        "#844eac",
+        "#d28cd7"
+    ],
+    "Test_SEL-EAMrXBgnstD.jpg": [
+        "#af77cf",
+        "#e794e7",
+        "#eca6ec",
+        "#d98ddf",
+        "#f2b2f1"
+    ],
+    "Test_SEL-EAMrXNewD.jpg": [
+        "#d488d5",
+        "#e399df",
+        "#cc77cf",
+        "#a36fc5",
+        "#905eb8"
+    ],
+    "Test_SEL-EAMrXOldD.jpg": [
+        "#da98de",
+        "#da8bda",
+        "#e6a3e4",
+        "#a677cc",
+        "#9a6dc4"
+    ],
+    "Ctrl_EAM-BgnstRxBgnstD.jpg": [
+        "#f6b5f4",
+        "#f1c8f2",
+        "#cc8ede",
+        "#f8e3f8",
+        "#bd7fd6"
+    ],
+    "Ctrl_EAM-BgnstRxNewD.jpg": [
+        "#d879ca",
+        "#eda6df",
+        "#d990d3",
+        "#9659b1",
+        "#a868bc"
+    ],
+    "Ctrl_EAM-BgnstRxOldD.jpg": [
+        "#f1adf0",
+        "#cd9ae4",
+        "#efc0f1",
+        "#c08cdb",
+        "#ed9cea"
+    ],
+    "Ctrl_EAM-EAMrXBgnstD.jpg": [
+        "#f9e1f8",
+        "#f6b2f7",
+        "#bb7dd8",
+        "#cb90e2",
+        "#f09cf0"
+    ],
+    "Ctrl_EAM-EAMrXNewD.jpg": [
+        "#f4aaf5",
+        "#f7dcf8",
+        "#f3c1f5",
+        "#dfa4e9",
+        "#ec91eb"
+    ],
+    "Ctrl_EAM-EAMrXOldD.jpg": [
+        "#f7b7f8",
+        "#f6cff9",
+        "#e3b5f7",
+        "#cfa3e9",
+        "#f0a3f2"
+    ],
+    "Test_EAM-BgnstRxBgnstD.jpg": [
+        "#ebc0d7",
+        "#e8d3dd",
+        "#e7b2cf",
+        "#da92c5",
+        "#d283bd"
+    ],
+    "Test_EAM-BgnstRxNewD.jpg": [
+        "#fae4f6",
+        "#f9c4ef",
+        "#f7b9eb",
+        "#e8a7e1",
+        "#f5d1ee"
+    ],
+    "Test_EAM-EAMrXBgnstD.jpg": [
+        "#f6bdeb",
+        "#f8caf0",
+        "#f2aee8",
+        "#f8d7f0",
+        "#e99ee0"
+    ],
+    "Test_EAM-EAMrXNewD.jpg": [
+        "#f8c3f0",
+        "#f7d1f2",
+        "#f8ddf4",
+        "#faeaf8",
+        "#f4b4e9"
+    ],
+    "Test_EAM-EAMrXOldD.jpg": [
+        "#efa4d6",
+        "#f5abdd",
+        "#f4d0e6",
+        "#efb7dc",
+        "#d076c1"
     ]
 }
