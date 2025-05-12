@@ -3,6 +3,7 @@ from flask import (
     request,
     jsonify,
     render_template,
+    send_from_directory,
 )
 import os
 import json
@@ -17,8 +18,10 @@ from collections import Counter
 Image.MAX_IMAGE_PIXELS = 1000000000
 
 app = Flask(__name__)
-app.config["UPLOAD_FOLDER"] = "static/uploads"
-app.config["REPORT_FOLDER"] = "static/reports"
+# app.config["UPLOAD_FOLDER"] = "static/uploads"
+# app.config["REPORT_FOLDER"] = "static/reports"
+app.config["UPLOAD_FOLDER"] = "/tmp/uploads"
+app.config["REPORT_FOLDER"] = "/tmp/reports"
 app.config["MAX_CONTENT_LENGTH"] = 200 * 1024 * 1024
 app.config["ALLOWED_EXTENSIONS"] = {"png", "jpg", "jpeg"}
 
@@ -86,7 +89,7 @@ def upload_file():
 
         return jsonify(
             {
-                "image_url": f"/static/uploads/{filename}",
+                "image_url": f"/uploads/{filename}",
                 "filename": filename,
                 "colors": colors,
             }
@@ -214,6 +217,11 @@ def all_images_data():
         )
 
     return jsonify(image_data)
+
+
+@app.route("/uploads/<filename>")
+def uploaded_file(filename):
+    return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
 
 
 @app.route("/clear_data", methods=["POST"])
